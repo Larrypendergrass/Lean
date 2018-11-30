@@ -23,6 +23,7 @@ using QuantConnect.Orders;
 using QuantConnect.Orders.Fills;
 using QuantConnect.Securities;
 using QuantConnect.Tests.Common.Data;
+using QuantConnect.Tests.Common.Securities;
 
 namespace QuantConnect.Tests.Common.Orders.Fills
 {
@@ -125,8 +126,8 @@ namespace QuantConnect.Tests.Common.Orders.Fills
                     true,
                     false
                 ),
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                 ErrorCurrencyConverter.Instance
             );
         }

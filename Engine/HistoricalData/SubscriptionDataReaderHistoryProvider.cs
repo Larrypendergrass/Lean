@@ -41,6 +41,7 @@ namespace QuantConnect.Lean.Engine.HistoricalData
         private IMapFileProvider _mapFileProvider;
         private IFactorFileProvider _factorFileProvider;
         private IDataCacheProvider _dataCacheProvider;
+        private IAccountCurrencyProvider _accountCurrencyProvider;
 
         /// <summary>
         /// Initializes this history provider to work for the specified job
@@ -51,6 +52,7 @@ namespace QuantConnect.Lean.Engine.HistoricalData
             _mapFileProvider = parameters.MapFileProvider;
             _factorFileProvider = parameters.FactorFileProvider;
             _dataCacheProvider = parameters.DataCacheProvider;
+            _accountCurrencyProvider = parameters.AccountCurrencyProvider;
         }
 
         /// <summary>
@@ -65,7 +67,12 @@ namespace QuantConnect.Lean.Engine.HistoricalData
             var subscriptions = new List<Subscription>();
             foreach (var request in requests)
             {
-                var subscription = CreateSubscription(request, request.StartTimeUtc, request.EndTimeUtc);
+                var subscription = CreateSubscription(
+                    request,
+                    request.StartTimeUtc,
+                    request.EndTimeUtc,
+                    _accountCurrencyProvider.AccountCurrency);
+
                 subscription.MoveNext(); // prime pump
                 subscriptions.Add(subscription);
             }
@@ -76,7 +83,11 @@ namespace QuantConnect.Lean.Engine.HistoricalData
         /// <summary>
         /// Creates a subscription to process the request
         /// </summary>
-        private Subscription CreateSubscription(HistoryRequest request, DateTime start, DateTime end)
+        private Subscription CreateSubscription(
+            HistoryRequest request,
+            DateTime start,
+            DateTime end,
+            string accountCurrency)
         {
             // data reader expects these values in local times
             start = start.ConvertFromUtc(request.ExchangeHours.TimeZone);
@@ -99,8 +110,8 @@ namespace QuantConnect.Lean.Engine.HistoricalData
             var security = new Security(
                 request.ExchangeHours,
                 config,
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(accountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(accountCurrency),
                 ErrorCurrencyConverter.Instance
             );
             var mapFileResolver = config.SecurityType == SecurityType.Equity

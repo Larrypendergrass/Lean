@@ -23,6 +23,7 @@ using QuantConnect.Data;
 using QuantConnect.Data.Market;
 using QuantConnect.Lean.Engine.TransactionHandlers;
 using QuantConnect.Orders;
+using QuantConnect.Orders.Fees;
 using QuantConnect.Orders.Fills;
 using QuantConnect.Securities;
 using QuantConnect.Tests.Common.Securities;
@@ -103,8 +104,8 @@ namespace QuantConnect.Tests.Common.Orders.Fills
             security = new Security(
                 SecurityExchangeHours.AlwaysOpen(TimeZones.NewYork),
                 config,
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                 ErrorCurrencyConverter.Instance
             );
 

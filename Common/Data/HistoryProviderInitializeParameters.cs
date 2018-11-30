@@ -55,6 +55,11 @@ namespace QuantConnect.Data
         public IFactorFileProvider FactorFileProvider { get; }
 
         /// <summary>
+        /// The account currency provider
+        /// </summary>
+        public IAccountCurrencyProvider AccountCurrencyProvider { get; }
+
+        /// <summary>
         /// A function used to send status updates
         /// </summary>
         public Action<int> StatusUpdateAction { get; }
@@ -69,6 +74,7 @@ namespace QuantConnect.Data
         /// <param name="mapFileProvider">Provider used to get a map file resolver to handle equity mapping</param>
         /// <param name="factorFileProvider">Provider used to get factor files to handle equity price scaling</param>
         /// <param name="statusUpdateAction">Function used to send status updates</param>
+        /// <param name="accountCurrencyProvider">The account currency provider</param>
         public HistoryProviderInitializeParameters(
             AlgorithmNodePacket job,
             IApi api,
@@ -76,7 +82,8 @@ namespace QuantConnect.Data
             IDataCacheProvider dataCacheProvider,
             IMapFileProvider mapFileProvider,
             IFactorFileProvider factorFileProvider,
-            Action<int> statusUpdateAction)
+            Action<int> statusUpdateAction,
+            IAccountCurrencyProvider accountCurrencyProvider)
         {
             Job = job;
             Api = api;
@@ -85,6 +92,7 @@ namespace QuantConnect.Data
             MapFileProvider = mapFileProvider;
             FactorFileProvider = factorFileProvider;
             StatusUpdateAction = statusUpdateAction;
+            AccountCurrencyProvider = accountCurrencyProvider;
         }
     }
 }

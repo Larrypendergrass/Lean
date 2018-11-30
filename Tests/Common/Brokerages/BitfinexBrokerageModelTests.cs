@@ -42,8 +42,8 @@ namespace QuantConnect.Tests.Common.Brokerages
                         false,
                         false
                     ),
-                    new Cash(CashBook.AccountCurrency, 0, 1m),
-                    SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                    new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                    SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                     ErrorCurrencyConverter.Instance
                 );
             }

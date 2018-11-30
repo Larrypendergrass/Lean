@@ -23,6 +23,7 @@ using QuantConnect.Data;
 using QuantConnect.Data.Market;
 using QuantConnect.Logging;
 using QuantConnect.Securities;
+using QuantConnect.Tests.Common.Securities;
 using QuantConnect.ToolBox.IEX;
 
 namespace QuantConnect.Tests.Engine.DataFeeds
@@ -254,7 +255,7 @@ namespace QuantConnect.Tests.Engine.DataFeeds
         public void IEXCouldGetHistory(Symbol symbol, Resolution resolution, TimeSpan period, bool received)
         {
             var historyProvider = new IEXDataQueueHandler();
-            historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null));
+            historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null, new TestAccountCurrencyProvider()));
 
             var now = DateTime.UtcNow;
 

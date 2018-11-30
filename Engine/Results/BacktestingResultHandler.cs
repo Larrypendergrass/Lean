@@ -285,7 +285,8 @@ namespace QuantConnect.Lean.Engine.Results
                         Algorithm.Transactions.TransactionRecord,
                         new Dictionary<string, string>(),
                         runtimeStatistics,
-                        new Dictionary<string, AlgorithmPerformance>());
+                        new Dictionary<string, AlgorithmPerformance>(),
+                        Algorithm.AccountCurrency);
 
                     StoreResult(new BacktestResultPacket(_job, completeResult, progress));
 
@@ -375,6 +376,7 @@ namespace QuantConnect.Lean.Engine.Results
                             result.Results.Statistics,
                             result.Results.RuntimeStatistics,
                             result.Results.RollingWindow,
+                            Algorithm.AccountCurrency,
                             result.Results.TotalPerformance);
                     }
 
@@ -420,7 +422,15 @@ namespace QuantConnect.Lean.Engine.Results
 
                 //Create a result packet to send to the browser.
                 var result = new BacktestResultPacket((BacktestNodePacket) job,
-                    new BacktestResult(Algorithm.IsFrameworkAlgorithm, charts, orders, profitLoss, statisticsResults.Summary, banner, statisticsResults.RollingPerformances, statisticsResults.TotalPerformance))
+                    new BacktestResult(Algorithm.IsFrameworkAlgorithm,
+                        charts,
+                        orders,
+                        profitLoss,
+                        statisticsResults.Summary,
+                        banner,
+                        statisticsResults.RollingPerformances,
+                        Algorithm.AccountCurrency,
+                        statisticsResults.TotalPerformance))
                 {
                     ProcessingTime = (DateTime.UtcNow - _startTime).TotalSeconds,
                     DateFinished = DateTime.Now,

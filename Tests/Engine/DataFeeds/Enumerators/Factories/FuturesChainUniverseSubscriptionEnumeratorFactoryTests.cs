@@ -25,6 +25,7 @@ using QuantConnect.Lean.Engine.DataFeeds;
 using QuantConnect.Lean.Engine.DataFeeds.Enumerators.Factories;
 using QuantConnect.Securities;
 using QuantConnect.Securities.Future;
+using QuantConnect.Tests.Common.Securities;
 
 namespace QuantConnect.Tests.Engine.DataFeeds.Enumerators.Factories
 {
@@ -42,7 +43,7 @@ namespace QuantConnect.Tests.Engine.DataFeeds.Enumerators.Factories
 
             var canonicalSymbol = Symbol.Create("VX", SecurityType.Future, Market.USA, "/VX");
 
-            var quoteCurrency = new Cash(CashBook.AccountCurrency, 0, 1);
+            var quoteCurrency = new Cash(CashBookTests.AccountCurrency, 0, 1);
             var exchangeHours = MarketHoursDatabase.FromDataFolder().GetExchangeHours(Market.USA, canonicalSymbol, SecurityType.Future);
             var config = new SubscriptionDataConfig(
                 typeof(ZipEntryName),
@@ -63,7 +64,7 @@ namespace QuantConnect.Tests.Engine.DataFeeds.Enumerators.Factories
                 canonicalSymbol,
                 exchangeHours,
                 quoteCurrency,
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                 ErrorCurrencyConverter.Instance
             );
 

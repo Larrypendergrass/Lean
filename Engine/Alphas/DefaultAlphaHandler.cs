@@ -132,6 +132,7 @@ namespace QuantConnect.Lean.Engine.Alphas
                 return;
             }
 
+            RuntimeStatistics.AccountCurrency = algorithm.AccountCurrency;
             // send date ranges to extensions for initialization -- this data wasn't available when the handler was
             // initialzied, so we need to invoke it here
             InsightManager.InitializeExtensionsForRange(algorithm.StartDate, algorithm.EndDate, algorithm.UtcTime);

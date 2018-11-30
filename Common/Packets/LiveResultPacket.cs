@@ -157,7 +157,16 @@ namespace QuantConnect.Packets
         /// <summary>
         /// Constructor for the result class for dictionary objects
         /// </summary>
-        public LiveResult(bool isFrameworkAlgorithm, IDictionary<string, Chart> charts, IDictionary<int, Order> orders, IDictionary<DateTime, decimal> profitLoss, IDictionary<string, Holding> holdings, CashBook cashbook, IDictionary<string, string> statistics, IDictionary<string, string> runtime, IDictionary<string, string> serverStatistics = null)
+        public LiveResult(bool isFrameworkAlgorithm,
+            IDictionary<string, Chart> charts,
+            IDictionary<int, Order> orders,
+            IDictionary<DateTime, decimal> profitLoss,
+            IDictionary<string, Holding> holdings,
+            CashBook cashbook,
+            IDictionary<string, string> statistics,
+            IDictionary<string, string> runtime,
+            IDictionary<string, string> serverStatistics = null,
+            string accountCurrency = "")
         {
             Charts = charts;
             Orders = orders;
@@ -168,6 +177,7 @@ namespace QuantConnect.Packets
             RuntimeStatistics = runtime;
             ServerStatistics = serverStatistics ?? OS.GetServerStatistics();
             IsFrameworkAlgorithm = isFrameworkAlgorithm;
+            AlphaRuntimeStatistics.AccountCurrency = accountCurrency;
         }
     }
 

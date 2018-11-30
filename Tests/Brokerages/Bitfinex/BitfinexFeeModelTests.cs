@@ -21,6 +21,7 @@ using System;
 using QuantConnect.Data;
 using QuantConnect.Data.Market;
 using QuantConnect.Brokerages;
+using QuantConnect.Tests.Common.Securities;
 
 namespace QuantConnect.Tests.Brokerages.Bitfinex
 {
@@ -44,8 +45,8 @@ namespace QuantConnect.Tests.Brokerages.Bitfinex
                         false,
                         false
                     ),
-                    new Cash(CashBook.AccountCurrency, 0, 1m),
-                    SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                    new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                    SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                     ErrorCurrencyConverter.Instance
                 );
                 security.SetMarketPrice(new Tick(DateTime.UtcNow, Symbol, LowPrice, HighPrice));

@@ -22,6 +22,7 @@ using QuantConnect.Lean.Engine.HistoricalData;
 using QuantConnect.Logging;
 using QuantConnect.Securities;
 using QuantConnect.Brokerages.Bitfinex;
+using QuantConnect.Tests.Common.Securities;
 
 namespace QuantConnect.Tests.Brokerages.Bitfinex
 {
@@ -74,7 +75,7 @@ namespace QuantConnect.Tests.Brokerages.Bitfinex
 
                 var historyProvider = new BrokerageHistoryProvider();
                 historyProvider.SetBrokerage(brokerage);
-                historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null));
+                historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null, new TestAccountCurrencyProvider()));
 
                 var now = DateTime.UtcNow;
 

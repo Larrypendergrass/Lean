@@ -25,6 +25,7 @@ using QuantConnect.Data.Market;
 using QuantConnect.Lean.Engine.HistoricalData;
 using QuantConnect.Logging;
 using QuantConnect.Securities;
+using QuantConnect.Tests.Common.Securities;
 using RestSharp;
 
 namespace QuantConnect.Tests.Brokerages.GDAX
@@ -44,7 +45,7 @@ namespace QuantConnect.Tests.Brokerages.GDAX
 
             var historyProvider = new BrokerageHistoryProvider();
             historyProvider.SetBrokerage(brokerage);
-            historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null));
+            historyProvider.Initialize(new HistoryProviderInitializeParameters(null, null, null, null, null, null, null, new TestAccountCurrencyProvider()));
 
             var now = DateTime.UtcNow;
 

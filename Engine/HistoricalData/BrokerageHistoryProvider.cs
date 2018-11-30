@@ -34,6 +34,7 @@ namespace QuantConnect.Lean.Engine.HistoricalData
     public class BrokerageHistoryProvider : SynchronizingHistoryProvider
     {
         private IBrokerage _brokerage;
+        private IAccountCurrencyProvider _accountCurrencyProvider;
 
         /// <summary>
         /// Sets the brokerage to be used for historical requests
@@ -51,6 +52,7 @@ namespace QuantConnect.Lean.Engine.HistoricalData
         public override void Initialize(HistoryProviderInitializeParameters parameters)
         {
             _brokerage.Connect();
+            _accountCurrencyProvider = parameters.AccountCurrencyProvider;
         }
 
         /// <summary>
@@ -66,7 +68,11 @@ namespace QuantConnect.Lean.Engine.HistoricalData
             foreach (var request in requests)
             {
                 var history = _brokerage.GetHistory(request);
-                var subscription = CreateSubscription(request, history);
+                var subscription = CreateSubscription(
+                    request,
+                    history,
+                    _accountCurrencyProvider.AccountCurrency);
+
                 subscription.MoveNext(); // prime pump
                 subscriptions.Add(subscription);
             }
@@ -77,7 +83,10 @@ namespace QuantConnect.Lean.Engine.HistoricalData
         /// <summary>
         /// Creates a subscription to process the history request
         /// </summary>
-        private static Subscription CreateSubscription(HistoryRequest request, IEnumerable<BaseData> history)
+        private static Subscription CreateSubscription(
+            HistoryRequest request,
+            IEnumerable<BaseData> history,
+            string accountCurrency)
         {
             // data reader expects these values in local times
             var start = request.StartTimeUtc.ConvertFromUtc(request.ExchangeHours.TimeZone);
@@ -100,8 +109,8 @@ namespace QuantConnect.Lean.Engine.HistoricalData
             var security = new Security(
                 request.ExchangeHours,
                 config,
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(accountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(accountCurrency),
                 ErrorCurrencyConverter.Instance
             );
 

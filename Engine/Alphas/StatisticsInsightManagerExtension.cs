@@ -48,7 +48,10 @@ namespace QuantConnect.Lean.Engine.Alphas
         /// <param name="tradablePercentOfVolume">Percent of volume of first bar used to estimate the maximum number of tradable shares. Defaults to 1%</param>
         /// <param name="period">The period used for exponential smoothing of scores - this is a number of insights. Defaults to 100 insight predictions.</param>
         /// <param name="requireRollingAverageWarmup">Specify true to force the population average scoring to warmup before plotting.</param>
-        public StatisticsInsightManagerExtension(decimal tradablePercentOfVolume = 0.01m, int period = 100, bool requireRollingAverageWarmup = false)
+        public StatisticsInsightManagerExtension(
+            decimal tradablePercentOfVolume = 0.01m,
+            int period = 100,
+            bool requireRollingAverageWarmup = false)
         {
             Statistics = new AlphaRuntimeStatistics();
             _tradablePercentOfVolume = tradablePercentOfVolume;

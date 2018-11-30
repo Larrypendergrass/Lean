@@ -39,8 +39,8 @@ namespace QuantConnect.Tests.Common.Securities
             var security = new Security(
                 SecurityExchangeHoursTests.CreateUsEquitySecurityExchangeHours(),
                 config,
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                 ErrorCurrencyConverter.Instance
             );
 
@@ -92,8 +92,8 @@ namespace QuantConnect.Tests.Common.Securities
             var security = new Security(
                 SecurityExchangeHoursTests.CreateUsEquitySecurityExchangeHours(),
                 config,
-                new Cash(CashBook.AccountCurrency, 0, 1m),
-                SymbolProperties.GetDefault(CashBook.AccountCurrency),
+                new Cash(CashBookTests.AccountCurrency, 0, 1m),
+                SymbolProperties.GetDefault(CashBookTests.AccountCurrency),
                 ErrorCurrencyConverter.Instance
             );
 
