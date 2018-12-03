@@ -343,7 +343,11 @@ namespace QuantConnect.Securities
                 return cashAmount;
             }
 
-            var amount = Convert(cashAmount.Amount, cashAmount.Currency, AccountCurrency);
+            var amount = 0m;
+            if (cashAmount.Amount != 0)
+            {
+                amount = Convert(cashAmount.Amount, cashAmount.Currency, AccountCurrency);
+            }
             return new CashAmount(amount, AccountCurrency);
         }
 

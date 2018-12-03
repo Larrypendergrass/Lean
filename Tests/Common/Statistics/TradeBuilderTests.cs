@@ -26,8 +26,9 @@ namespace QuantConnect.Tests.Common.Statistics
     [TestFixture]
     public class TradeBuilderTests
     {
-        private const decimal OrderFee = 1;
+        private readonly OrderFee OrderFee = new OrderFee(new CashAmount(1, CashBookTests.AccountCurrency));
         private const decimal ConversionRate = 1;
+        private const decimal FeeConversionRate = 1;
         private readonly DateTime _startTime = new DateTime(2015, 08, 06, 15, 30, 0);
 
         [TestCase(FillGroupingMethod.FillToFill, FillMatchingMethod.FIFO)]
@@ -44,7 +45,7 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -52,7 +53,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -87,7 +88,7 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -95,7 +96,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -130,14 +131,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -145,7 +146,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -215,14 +216,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -230,7 +231,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -300,14 +301,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -315,7 +316,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -385,14 +386,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -400,7 +401,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -470,14 +471,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -485,7 +486,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -534,14 +535,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -549,7 +550,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -598,14 +599,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -613,17 +614,17 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -747,14 +748,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -762,17 +763,17 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -896,14 +897,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -911,17 +912,17 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 3k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -3000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -3000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1108,14 +1109,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1123,17 +1124,17 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 3k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 3000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 3000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1320,14 +1321,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.07m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1335,22 +1336,22 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.10m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.10m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 2k
-            builder.ProcessFill(new OrderEvent(6, Symbols.EURUSD, time.AddMinutes(50), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(6, Symbols.EURUSD, time.AddMinutes(50), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1488,14 +1489,14 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.07m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             builder.SetMarketPrice(Symbols.EURUSD, 1.075m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1503,22 +1504,22 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(3, Symbols.EURUSD, time.AddMinutes(20), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.10m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(4, Symbols.EURUSD, time.AddMinutes(30), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.10m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(5, Symbols.EURUSD, time.AddMinutes(40), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.08m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
             // Buy 2k
-            builder.ProcessFill(new OrderEvent(6, Symbols.EURUSD, time.AddMinutes(50), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate);
+            builder.ProcessFill(new OrderEvent(6, Symbols.EURUSD, time.AddMinutes(50), OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.09m, fillQuantity: 2000, orderFee: OrderFee), ConversionRate, FeeConversionRate);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1658,7 +1659,7 @@ namespace QuantConnect.Tests.Common.Statistics
             var time = _startTime;
 
             // Buy 1k
-            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, multiplier);
+            builder.ProcessFill(new OrderEvent(1, Symbols.EURUSD, time, OrderStatus.Filled, OrderDirection.Buy, fillPrice: 1.08m, fillQuantity: 1000, orderFee: OrderFee), ConversionRate, FeeConversionRate, multiplier);
 
             Assert.IsTrue(builder.HasOpenPosition(Symbols.EURUSD));
 
@@ -1666,7 +1667,7 @@ namespace QuantConnect.Tests.Common.Statistics
             builder.SetMarketPrice(Symbols.EURUSD, 1.10m);
 
             // Sell 1k
-            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, multiplier);
+            builder.ProcessFill(new OrderEvent(2, Symbols.EURUSD, time.AddMinutes(10), OrderStatus.Filled, OrderDirection.Sell, fillPrice: 1.09m, fillQuantity: -1000, orderFee: OrderFee), ConversionRate, FeeConversionRate, multiplier);
 
             Assert.IsFalse(builder.HasOpenPosition(Symbols.EURUSD));
 
